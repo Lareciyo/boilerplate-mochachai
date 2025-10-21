@@ -4,11 +4,26 @@ const server = require('../server');
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
+const Browser = require('zombie');
+Browser.site = 'http://localhost:3000/';
+
+// -----------------------------
+// In-memory data for explorers
+// -----------------------------
+const explorers = [
+  { surname: 'Colombo', name: 'Cristoforo' },
+  { surname: 'da Verrazzano', name: 'Giovanni' },
+  { surname: 'Vespucci', name: 'Amerigo' },
+];
+
+// -----------------------------
+// Functional Tests with chai-http
+// -----------------------------
 suite('Functional Tests', function () {
   this.timeout(5000);
 
   suite('Integration tests with chai-http', function () {
-    // #1
+    // #1 Test GET /hello with no name
     test('Test GET /hello with no name', function (done) {
       chai
         .request(server)
@@ -20,7 +35,7 @@ suite('Functional Tests', function () {
         });
     });
 
-    // #2
+    // #2 Test GET /hello with a name
     test('Test GET /hello with your name', function (done) {
       chai
         .request(server)
@@ -32,43 +47,39 @@ suite('Functional Tests', function () {
         });
     });
 
-    // #3
+    // #3 Send {surname: "Colombo"}
     test('Send {surname: "Colombo"}', function (done) {
+      const explorer = explorers.find(e => e.surname === 'Colombo');
       chai
         .request(server)
         .post('/travellers')
         .send({ surname: 'Colombo' })
         .end(function (err, res) {
           assert.equal(res.status, 200);
-          assert.deepEqual(res.body, {
-            name: 'Cristoforo',
-            surname: 'Colombo',
-          });
+          assert.deepEqual(res.body, explorer);
           done();
         });
     });
 
-    // #4
+    // #4 Send {surname: "da Verrazzano"}
     test('Send {surname: "da Verrazzano"}', function (done) {
+      const explorer = explorers.find(e => e.surname === 'da Verrazzano');
       chai
         .request(server)
         .post('/travellers')
         .send({ surname: 'da Verrazzano' })
         .end(function (err, res) {
           assert.equal(res.status, 200);
-          assert.deepEqual(res.body, {
-            name: 'Giovanni',
-            surname: 'da Verrazzano',
-          });
+          assert.deepEqual(res.body, explorer);
           done();
         });
     });
   });
 });
 
-const Browser = require('zombie');
-Browser.site = 'http://localhost:3000/';
-
+// -----------------------------
+// Functional Tests with Zombie.js
+// -----------------------------
 suite('Functional Tests with Zombie.js', function () {
   this.timeout(5000);
   const browser = new Browser();
@@ -84,7 +95,7 @@ suite('Functional Tests with Zombie.js', function () {
       browser.visit('/', done);
     });
 
-    // #5
+    // #5 Submit the surname "Colombo" in the HTML form
     test('Submit the surname "Colombo" in the HTML form', function (done) {
       browser.fill('surname', 'Colombo').pressButton('submit', function () {
         browser.assert.success();
@@ -95,7 +106,7 @@ suite('Functional Tests with Zombie.js', function () {
       });
     });
 
-    // #6
+    // #6 Submit the surname "Vespucci" in the HTML form
     test('Submit the surname "Vespucci" in the HTML form', function (done) {
       browser.fill('surname', 'Vespucci').pressButton('submit', function () {
         browser.assert.success();

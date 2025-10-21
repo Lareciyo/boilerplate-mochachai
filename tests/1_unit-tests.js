@@ -40,9 +40,9 @@ suite('Unit Tests', function () {
     });
     // #6
     test('#strictEqual, #notStrictEqual', function () {
-      assert.notStrictEqual(6, '6');
+      assert.strictEqual(6, 6);
       assert.strictEqual(6, 3 * 2);
-      assert.strictEqual(6 * '2', 12);
+      assert.notStrictEqual(6 * '2', 12);
       assert.notStrictEqual([1, 'a', {}], [1, 'a', {}]);
     });
     // #7
@@ -61,24 +61,23 @@ suite('Unit Tests', function () {
   suite('Comparisons', function () {
     // #8
     test('#isAbove, #isAtMost', function () {
-      assert.isAtMost('hello'.length, 5);
+      assert.isAbove('hello'.length, 5);
       assert.isAbove(1, 0);
       assert.isAbove(Math.PI, 3);
       assert.isAtMost(1 - Math.random(), 1);
     });
     // #9
     test('#isBelow, #isAtLeast', function () {
-      assert.isAtLeast('world'.length, 5);
+      assert.isBelow('world'.length, 5);
       assert.isAtLeast(2 * Math.random(), 0);
       assert.isBelow(5 % 2, 2);
       assert.isBelow(2 / 3, 1);
     });
     // #10
-test('#approximately', function () {
-  assert.approximately(weirdNumbers(0.5), 1, 0.8);
-  assert.approximately(weirdNumbers(0.2), 1, 0.8);
-});
-
+    test('#approximately', function () {
+      assert.approximately(weirdNumbers(0.5), 1, 0.8);
+      assert.approximately(weirdNumbers(0.2), 1, 0.8);
+    });
   });
 
   // ---------------------------------------------------------------------------
@@ -93,8 +92,8 @@ test('#approximately', function () {
     });
     // #12
     test('Array #include, #notInclude', function () {
-      assert.notInclude(winterMonths, 'jul', "It's summer in july...");
-      assert.include(backendLanguages, 'javascript', 'JS is a backend language');
+      assert.include(winterMonths, 'jul', "It's summer in july...");
+      assert.notInclude(backendLanguages, 'javascript', 'JS is a backend language');
     });
   });
 
@@ -108,7 +107,7 @@ test('#approximately', function () {
     test('#isString, #isNotString', function () {
       assert.isNotString(Math.sin(Math.PI / 4), 'A float is not a string');
       assert.isString(process.env.PATH, 'An env variable is a string (or undefined)');
-      assert.isString(JSON.stringify({ type: 'object' }), 'JSON is a string');
+      assert.isNotString(JSON.stringify({ type: 'object' }), 'JSON is a string');
     });
     // #14
     test('String #include, #notInclude', function () {

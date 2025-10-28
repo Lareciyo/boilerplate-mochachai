@@ -1,11 +1,11 @@
 const chai = require('chai');
-const assert = chai.assert;
-const server = require('../server');
 const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
-
+const assert = chai.assert;
+const server = require('../server'); // make sure server exports the app
 const Browser = require('zombie');
-Browser.site = 'http://localhost:3000/';
+
+chai.use(chaiHttp);
+Browser.site = 'http://localhost:3000';
 
 // -----------------------------
 // In-memory data for explorers
@@ -23,6 +23,7 @@ suite('Functional Tests', function () {
   this.timeout(5000);
 
   suite('Integration tests with chai-http', function () {
+
     // #1 Test GET /hello with no name
     test('Test GET /hello with no name', function (done) {
       chai
@@ -97,24 +98,28 @@ suite('Functional Tests with Zombie.js', function () {
 
     // #5 Submit the surname "Colombo" in the HTML form
     test('Submit the surname "Colombo" in the HTML form', function (done) {
-      browser.fill('surname', 'Colombo').pressButton('submit', function () {
-        browser.assert.success();
-        browser.assert.text('span#name', 'Cristoforo');
-        browser.assert.text('span#surname', 'Colombo');
-        browser.assert.element('span#dates', 1);
-        done();
-      });
+      browser
+        .fill('surname', 'Colombo')
+        .pressButton('submit', function () {
+          browser.assert.success();
+          browser.assert.text('span#name', 'Cristoforo');
+          browser.assert.text('span#surname', 'Colombo');
+          browser.assert.element('span#dates');
+          done();
+        });
     });
 
     // #6 Submit the surname "Vespucci" in the HTML form
     test('Submit the surname "Vespucci" in the HTML form', function (done) {
-      browser.fill('surname', 'Vespucci').pressButton('submit', function () {
-        browser.assert.success();
-        browser.assert.text('span#name', 'Amerigo');
-        browser.assert.text('span#surname', 'Vespucci');
-        browser.assert.element('span#dates', 1);
-        done();
-      });
+      browser
+        .fill('surname', 'Vespucci')
+        .pressButton('submit', function () {
+          browser.assert.success();
+          browser.assert.text('span#name', 'Amerigo');
+          browser.assert.text('span#surname', 'Vespucci');
+          browser.assert.element('span#dates');
+          done();
+        });
     });
   });
 });

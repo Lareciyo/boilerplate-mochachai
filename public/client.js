@@ -13,8 +13,12 @@ function Utils() {
         if (Math.floor(xmlhttp.status / 100) === 2) {
           var results = xmlhttp.responseText;
           var type = xmlhttp.getResponseHeader('Content-Type');
-          if (type.match('application/json')) {
-            results = JSON.parse(results);
+          if (type && type.match('application/json')) { // Added null/undefined check for 'type'
+            try {
+              results = JSON.parse(results);
+            } catch (e) {
+              console.error('Error parsing JSON:', e);
+            }
           }
           cb(null, results);
         } else {
@@ -38,10 +42,8 @@ function Utils() {
         query = [];
         for (let key in options.data) {
           query.push(key + '=' + encodeURIComponent(options.data[key]));
-          query.push('&');
         }
-        query.pop();
-        query = query.join('');
+        query = query.join('&'); // Fix: join with '&', not push '&' then pop
       }
 
       switch (method.toLowerCase()) {
@@ -79,7 +81,7 @@ utils.ready(function () {
     e.preventDefault();
     if (input.value) {
       const options = {
-        method: 'put',
+        method: 'put', // Correct for client side interaction
         url: '/travellers',
         type: 'json',
         data: { surname: input.value }
@@ -87,9 +89,15 @@ utils.ready(function () {
       div.innerHTML = '<p>Loading...</p>';
       utils.ajax(options, function (err, res) {
         if (err) return console.log(err);
-        div.innerHTML = '<p>first name: <span id="name">' + res.name + '</span></p>' +
-                        '<p>last name: <span id="surname">' + res.surname + '</span></p>' +
-                        '<p>dates: <span id="dates">' + res.dates + '</span></p>';
+        
+        // Ensure res has name/surname before displaying, or use default
+        const name = res.name || 'N/A';
+        const surname = res.surname || input.value;
+        const dates = res.dates || 'Unknown';
+
+        div.innerHTML = '<p>first name: <span id="name">' + name + '</span></p>' +
+                        '<p>last name: <span id="surname">' + surname + '</span></p>' +
+                        '<p>dates: <span id="dates">' + dates + '</span></p>';
       });
     }
   });

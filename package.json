@@ -3,18 +3,18 @@
   "version": "0.0.1",
   "description": "Boilerplate for the Quality Assurance and Testing with Chai challenges",
   "main": "server.js",
-  "scripts": {
-    "test": "mocha --ui tdd",
+"scripts": {
+    "test": "mocha --ui tdd test/1_unit-tests.js test/2_functional-tests.js",
     "start": "node server.js"
   },
   "dependencies": {
     "body-parser": "1.19.0",
+    "chai-http": "^4.4.0",
     "cors": "2.8.5",
     "express": "4.17.1"
   },
   "devDependencies": {
     "chai": "^6.2.0",
-    "chai-http": "^5.1.2",
     "mocha": "^11.7.4",
     "zombie": "^6.1.4"
   },
